@@ -1,31 +1,37 @@
-# HomeControl: HomeView wall panel for Home Assistant
+# HomeControl: HomeView iPad wall panel
 
-This repo makes a three-view, Apple HomeView-style Home Assistant dashboard for a wall-mounted **iPad Air 2 (iPadOS 15.8)** in landscape.
-It's based on Shane Whatley's DIY HomeView design and adapted to the iPad Air 2's older Safari and 2 GB of RAM.
+This repo builds a one-screen, dot-matrix "hybrid" Home Assistant dashboard for a wall-mounted **iPad Air 2 (iPadOS 15.8)**.
+Home Assistant runs on a **Mac Mini** in a UTM virtual machine.
 
-| View | What's on it |
-|---|---|
-| **Widgets** | StandBy-style date, analog clock, photo frame, weather and upcoming events. Always on, no screensaver. |
-| **Home** | Clock, weather, doorbell preview, glass tiles for locks, garage, lights, fan and vacuum, scene pills and an agenda bar |
-| **Cameras** | Snapshot grid of 1–9 cameras. Tap one for a live pop-up with Prev / Next and lock/garage controls. |
+![Preview](docs/preview.png)
 
-It also includes an idle clock screensaver, motion wake, an automatic doorbell pop-up, and optional battery-saving charging.
+On the screen:
 
-**→ Start with [docs/SETUP-iPad-Air-2.md](docs/SETUP-iPad-Air-2.md).**
+- a dot-matrix clock;
+- weather with temperature and rain dot bars;
+- upcoming events from iCloud;
+- Spotify → Echo controls;
+- 3 Atomberg fans with tappable speed dots;
+- a Tapo strip and a Wipro tubelight with brightness dots;
+- 2 Tapo camera snapshots that open live.
 
-## Layout
+It also has an idle clock screensaver and camera motion pop-ups.
+
+**→ Setup: [docs/SETUP.md](docs/SETUP.md)**
+
+## Files
 
 ```
-homeview/config.yaml           <- the only file you edit (your entity IDs)
-homeview/base.yaml             design system: button-card templates + plugin settings
-homeview/build_dashboard.py    generates dist/ from the two files above
+homeview/config.yaml           <- the only file you edit (entity IDs, names, accent colour)
+homeview/base.yaml             design system: button-card templates + kiosk / screensaver settings
+homeview/dotmatrix.js          dot-matrix digit renderer injected into the templates
+homeview/build_dashboard.py    generates dist/ from the files above
 dist/homeview_dashboard.yaml   paste into the dashboard's Raw configuration editor
-dist/automations/*.yaml        paste each into a new automation (Edit in YAML)
-tools/prepare_slideshow.py     resizes + numbers photos for the photo frame
-reference/                     the original blueprint and YAML this is based on
+dist/homeview_package.yaml     copy to /config/packages/homeview.yaml (helpers, sensors, script, automations)
+reference/                     the original HomeView blueprint and the design reference image
 ```
 
-## Rebuild after editing the config
+## Rebuild
 
 ```bash
 pip install pyyaml
@@ -35,4 +41,4 @@ pip install pyyaml
 python3 homeview/build_dashboard.py
 ```
 
-The build lists any `your_…` placeholders that still need a real entity ID, and it fails if a pop-up link has no matching pop-up.
+The build lists every `your_…` placeholder still to fill in, and it fails if a pop-up link has no matching pop-up.
