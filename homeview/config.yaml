@@ -1,0 +1,135 @@
+# ==============================================================================
+# HomeView for iPad Air 2: THE ONE FILE YOU EDIT
+# ------------------------------------------------------------------------------
+# 1. Replace every value containing "your_" with a real entity ID
+#    (Settings -> Devices & services -> Entities, click an entity -> cog icon).
+# 2. Delete any optional section you don't have (vacuum, doorbell, cameras,
+#    scenes, wake, charging...). The build adapts the layout automatically.
+# 3. Run:  python3 homeview/build_dashboard.py
+#    It writes dist/homeview_dashboard.yaml + dist/automations/*.yaml and warns
+#    about any placeholder you forgot.
+# ==============================================================================
+
+dashboard:
+  url_path: home-widget        # Settings -> Dashboards -> Add dashboard -> URL
+  city: Your City              # label on the weather tile
+  glass_blur: true             # false = no frosted blur (faster if the iPad lags)
+  # Background for all three views. Default is a pure-CSS gradient (no upload,
+  # cheapest for the iPad). To use a picture instead, put it in
+  # /config/www/homeview/ and use e.g.:
+  #   background: center / cover no-repeat url("/local/homeview/glass.jpg")
+  background: >-
+    radial-gradient(900px 700px at 12% 8%, rgba(56, 97, 196, 0.55) 0%, rgba(0, 0, 0, 0) 60%),
+    radial-gradient(800px 650px at 92% 88%, rgba(150, 64, 120, 0.45) 0%, rgba(0, 0, 0, 0) 55%),
+    linear-gradient(160deg, #0B1020 0%, #151B2B 100%)
+
+# Photo frame on the Widgets view. Files must be named photo001.jpg, photo002.jpg...
+# tools/prepare_slideshow.py makes them and prints the count.
+photos:
+  folder: /local/homeview/slideshow   # = /config/www/homeview/slideshow on the HA server
+  count: 60
+  minutes: 2
+
+weather:
+  entity: weather.your_weather
+  uv_entity: weather.forecast_home    # optional: any weather entity that has uv_index
+  forecast_type: daily                # daily | hourly | twice_daily (twice_daily: NWS etc. only)
+
+calendars:                            # 1-3 calendars work well
+  - entity: calendar.your_calendar_1
+    name: Calendar 1
+    color: "#FF9F0A"                  # orange
+  - entity: calendar.your_calendar_2
+    name: Calendar 2
+    color: "#30D158"                  # green
+
+# Home view accessory tiles (4 per row; 2 rows fit best together with the
+# vacuum tile and the scene pills). Locks and covers ask for confirmation
+# before toggling; set confirm: false to skip that.
+tiles:
+  - entity: lock.your_front_door_lock
+    name: Front Door
+    icon: mdi:lock
+  - entity: cover.your_garage_door
+    name: Garage Door
+    icon: mdi:garage
+  - entity: light.your_porch_light
+    name: Front Porch
+    icon: mdi:outdoor-lamp
+  - entity: light.your_room_lights
+    name: Studio
+    icon: mdi:lightbulb-group
+  - entity: light.your_curtain_lights
+    name: Curtain Lights
+    icon: mdi:string-lights
+  - entity: switch.your_ceiling_fan
+    name: Ceiling Fan
+    type: fan                         # spinning icon while on
+
+scenes:                               # stacked two per tile slot
+  - entity: scene.your_good_night_scene
+    name: Good Night
+    icon: mdi:weather-night
+  - entity: scene.your_lights_off_scene
+    name: Studio Off
+    icon: mdi:power
+
+vacuum:                               # optional
+  entity: vacuum.your_vacuum_entity
+  name: Vacuum
+  water_low: binary_sensor.your_vacuum_water_low      # optional
+  extra_entities:                                     # optional, shown in the pop-up
+    - select.your_vacuum_cleaning_mode
+
+doorbell:                             # optional
+  preview: camera.your_doorbell_medium        # low/medium-res stream for the Home tile
+  live: camera.your_doorbell_high             # high-res stream for the pop-up
+  package: camera.your_package_camera         # optional second camera in the pop-up
+  ring_event: event.your_doorbell_ring        # event.* entity that changes on each ring
+  controls:
+    - lock.your_front_door_lock
+    - cover.your_garage_door
+    - light.your_porch_light
+
+cameras:                              # optional, 1-9 cameras; grid adapts (1/2/3 columns)
+  controls:                           # buttons under every live camera pop-up
+    - lock.your_front_door_lock
+    - cover.your_garage_door
+  list:
+    - name: Doorbell
+      snapshot: camera.your_doorbell_medium   # used for the grid (refreshes ~every 10 s)
+      live: camera.your_doorbell_high         # optional, used in the pop-up
+    - name: Package Cam
+      snapshot: camera.your_package_camera
+    - name: Front Porch
+      snapshot: camera.your_camera_3_medium
+      live: camera.your_camera_3_high
+    - name: Driveway
+      snapshot: camera.your_camera_4_medium
+      live: camera.your_camera_4_high
+    - name: Garage
+      snapshot: camera.your_camera_5_medium
+      live: camera.your_camera_5_high
+    - name: Right Yard
+      snapshot: camera.your_camera_6_medium
+      live: camera.your_camera_6_high
+    - name: Backyard
+      snapshot: camera.your_camera_7_medium
+      live: camera.your_camera_7_high
+    - name: Back Porch
+      snapshot: camera.your_camera_8_medium
+      live: camera.your_camera_8_high
+    - name: Left Yard
+      snapshot: camera.your_camera_9_medium
+      live: camera.your_camera_9_high
+
+wake:                                 # optional: wake the screensaver on motion
+  motion_sensor: binary_sensor.your_motion_or_presence_sensor
+
+# Optional: protect the 10-year-old iPad battery from sitting at 100% 24/7.
+# Needs a smart plug on the charger + the Companion app's battery sensor.
+# charging:
+#   battery_sensor: sensor.your_ipad_battery_level
+#   charger_switch: switch.your_ipad_charger_plug
+#   low: 30
+#   high: 80

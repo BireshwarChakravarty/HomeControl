@@ -1,0 +1,25 @@
+# Settings > Automations > Create automation > three dots > Edit in YAML > paste > Save
+alias: HomeView iPad - Doorbell pop-up
+description: Wakes the iPad and opens the doorbell pop-up for 45 seconds on every ring.
+mode: restart
+triggers:
+- trigger: state
+  entity_id: event.your_doorbell_ring
+  not_from:
+  - unavailable
+  - unknown
+  not_to:
+  - unavailable
+  - unknown
+actions:
+- action: input_boolean.turn_off
+  target:
+    entity_id: input_boolean.homeview_screensaver
+- action: input_boolean.turn_on
+  target:
+    entity_id: input_boolean.homeview_doorbell_popup
+- delay:
+    seconds: 45
+- action: input_boolean.turn_off
+  target:
+    entity_id: input_boolean.homeview_doorbell_popup
